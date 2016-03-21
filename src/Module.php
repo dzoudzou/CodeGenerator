@@ -9,9 +9,13 @@
 
 namespace Sake\CodeGenerator;
 
+use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use Sake\CodeGenerator\Doctrine\ORM\Tools\Console\Command\GenerateFormCommand;
 use Sake\CodeGenerator\Doctrine\ORM\Tools\Console\Command\GenerateInputFilterCommand;
+use Symfony\Component\Console\Application;
+use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\ModuleManager\ModuleManager;
 
 /**
  * This class initializes the CodeGenerator module.
@@ -27,7 +31,7 @@ class Module implements ConfigProviderInterface
         $events = $e->getEventManager()->getSharedManager();
         // Attach to helper set event and load the entity manager helper.
         $events->attach('doctrine', 'loadCli.post', function (EventInterface $e) {
-            /* @var $cli \Symfony\Component\Console\Application */
+            /* @var $cli Application */
             $cli = $e->getTarget();
             ConsoleRunner::addCommands($cli);
             $cli->addCommands(array(
@@ -36,7 +40,6 @@ class Module implements ConfigProviderInterface
             ));
         });
     }
-
 
     /**
      * Expected to return \Zend\ServiceManager\Config object or array to
